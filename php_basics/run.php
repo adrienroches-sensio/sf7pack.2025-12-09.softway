@@ -21,7 +21,7 @@ $eventDispatcher->addListener('stdClass', new class implements EventListenerInte
     {
         echo 'From listener interface handle' . PHP_EOL;
     }
-});
+}, +12);
 
 $event = new stdClass();
 $event->name = 'bar';
