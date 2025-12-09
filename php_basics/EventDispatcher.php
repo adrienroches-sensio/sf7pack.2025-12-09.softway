@@ -30,6 +30,6 @@ final class EventDispatcher
 
     private function getListeners(string $eventName): array
     {
-        return $this->listeners[$eventName] ?? [];
+        return $this->listeners[$eventName] ?? throw EventDispatcherException::noListenersForEvent($eventName);
     }
 }
