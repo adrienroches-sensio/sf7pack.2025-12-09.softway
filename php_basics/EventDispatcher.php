@@ -32,7 +32,12 @@ final class EventDispatcher
     {
         $listeners = $this->listeners[$eventName] ?? throw EventDispatcherException::noListenersForEvent($eventName);
 
-        usort($listeners, static fn (array $a, array $b): int => $b[1] <=> $a[1]);
+        usort($listeners, static function (array $a, array $b): int {
+            [, $priorityA] = $a;
+            [, $priorityB] = $b;
+
+            return $priorityB <=> $priorityA;
+        });
 
         return array_column($listeners, 0);
     }
