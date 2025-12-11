@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Conference;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
@@ -13,18 +12,13 @@ use InvalidArgumentException;
 /**
  * @extends ServiceEntityRepository<Conference>
  */
-class ConferenceRepository extends ServiceEntityRepository
+class ConferenceRepository extends ServiceEntityRepository implements ConferenceRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Conference::class);
     }
 
-    /**
-     * @return list<Conference>
-     *
-     * @throws InvalidArgumentException When both dates are null (one must be provided).
-     */
     public function searchBetweenDates(DateTimeImmutable|null $start, DateTimeImmutable|null $end): array
     {
         if (null === $start && null === $end) {
@@ -48,6 +42,11 @@ class ConferenceRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function listAll(): array
+    {
+        return $this->findAll();
     }
 
     /**
