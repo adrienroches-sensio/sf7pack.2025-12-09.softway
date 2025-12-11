@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Conference;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 
@@ -46,5 +48,44 @@ class ConferenceRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return list<Conference>
+     *
+     * @throws InvalidArgumentException When both dates are null (one must be provided).
+     */
+    public function searchBetweenDatesWithRsm(DateTimeImmutable|null $start, DateTimeImmutable|null $end): array
+    {
+        if (null === $start && null === $end) {
+            throw new InvalidArgumentException('At least one date must be provided.');
+        }
+
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addEntityResult(Conference::class, 'conference');
+
+        $whereClauses = [];
+        $parameters = [];
+
+        if (null !== $start) {
+            $whereClauses[] = 'conference.startAt >= :start';
+            $parameters['start'] = $start;
+        }
+
+        if (null !== $end) {
+            $whereClauses[] = 'conference.endAt <= :end';
+            $parameters['end'] = $end;
+        }
+
+        $whereClause = 'WHERE ' . implode(' AND ', $whereClauses);
+
+        $sql = <<<"SQLITE"
+        SELECT {$rsm->generateSelectClause()} FROM conference {$whereClause}
+        SQLITE;
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query = $query->setParameters($parameters);
+
+        return $query->getResult();
     }
 }
