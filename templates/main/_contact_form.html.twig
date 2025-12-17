@@ -1,6 +1,6 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 
-{{ form_start(form) }}
+{{ form_start(form, {attr: {'novalidate': 'novalidate'}}) }}
     {{ form_widget(form) }}
 
     <div class="d-grid"><button class="btn btn-primary btn-lg" style="background-color: limegreen; border-color: limegreen;" id="submitButton" type="submit">Submit</button></div>
