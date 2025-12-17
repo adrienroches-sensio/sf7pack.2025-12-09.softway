@@ -21,4 +21,9 @@ interface ConferenceRepositoryInterface
      * @return list<Conference>
      */
     public function listAll(): array;
+
+    /**
+     * @return list<Conference>
+     */
+    public function searchByName(string $name): array;
 }
