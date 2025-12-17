@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[AsAlias(id: ConferenceSearchInterface::class)]
+//#[AsAlias(id: ConferenceSearchInterface::class)]
 final class ApiConferenceSearch implements ConferenceSearchInterface
 {
     public function __construct(
